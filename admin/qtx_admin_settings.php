@@ -613,33 +613,33 @@ class QTX_Admin_Settings {
                     <p class="qtranxs-notes"><?php echo __( 'Edit language cannot be switched without page re-loading. Try this mode, if some of the advanced translatable fields do not properly respond to the Language Switching Buttons due to incompatibility with a plugin, which severely alters the default WP behaviour. This mode is the most compatible with other themes and plugins.', 'qtranslate' ) . ' ' . __( 'One may find convenient to use the default Editor Mode, while remembering not to switch edit languages on custom advanced translatable fields, where LSB do not work.', 'qtranslate' ) ?></p>
                 </td>
             </tr>
-            <?php
-            $options = qtranxf_fetch_file_selection( QTRANSLATE_DIR . '/admin/css/opLSBStyle' );
-            if ( $options ) {
-                ?>
-                <tr id="option_lsb_style">
-                    <th scope="row"><?php _e( 'LSB Style', 'qtranslate' ) ?></th>
-                    <td>
-                        <fieldset>
-                            <legend class="hidden"><?php _e( 'LSB Style', 'qtranslate' ) ?></legend>
-                            <label><?php printf( __( 'Choose CSS style for how Language Switching Buttons are rendered:', 'qtranslate' ) ) ?></label>
-                            <br/><select name="lsb_style" id="lsb_style"><?php
-                                foreach ( $options as $nm => $val ) {
-                                    echo '<option value="' . $val . '"' . selected( $val, $q_config['lsb_style'], false ) . '>' . $nm . '</option>';
-                                }
-                                echo '<option value="custom"' . selected( 'custom', $q_config['lsb_style'], false ) . '>' . __( 'Use custom CSS', 'qtranslate' ) . '</option>';
-                                ?></select>
-                            <p class="qtranxs-notes"><?php printf( __( 'Choice "%s" disables this option and allows one to use its own custom CSS provided by other means.', 'qtranslate' ), __( 'Use custom CSS', 'qtranslate' ) ) ?></p>
-                            <br/><input type="checkbox" name="hide_lsb_copy_content"
-                                        id="hide_lsb_copy_content"
-                                        value="1"<?php checked( ! empty( $q_config['hide_lsb_copy_content'] ) ) ?> ><label
-                                    for="hide_lsb_copy_content"><?php _e( 'Hide button "Copy From", which allows to copy multilingual content from other language.', 'qtranslate' ) ?></label>
-                        </fieldset>
-                    </td>
-                </tr>
-                <?php
-            }
-            ?>
+            <tr id="option_lsb_style">
+                <th scope="row"><?php _e( 'LSB Style', 'qtranslate' ) ?></th>
+                <td>
+                    <fieldset>
+                        <legend class="hidden"><?php _e( 'LSB Style', 'qtranslate' ) ?></legend>
+                        <label><?php printf( __( 'Choose CSS style for how Language Switching Buttons are rendered:', 'qtranslate' ) ) ?></label>
+                        <br/><select name="lsb_style" id="lsb_style"><?php
+                            $lsb_styles = [
+                                'simple_buttons' => __( 'Simple buttons', 'qtranslate' ),
+                                'simple_tabs'    => __( 'Simple tabs', 'qtranslate' ),
+                                'tabs_in_block' => __( 'Tabs in block', 'qtranslate' ),
+                                'custom'         => __( 'Use custom CSS', 'qtranslate' )
+                            ];
+                            // TODO remove temporary conversion for legacy values before 3.10.0
+                            $user_lsb_style = str_replace( '.css', '', strtolower( $q_config['lsb_style'] ) );
+                            foreach ( $lsb_styles as $lsb_key => $label ) {
+                                echo '<option value="' . $lsb_key . '"' . selected( $lsb_key, $user_lsb_style, false ) . '>' . $label . '</option>';
+                            }
+                            ?></select>
+                        <p class="qtranxs-notes"><?php printf( __( 'Choice "%s" disables this option and allows one to use its own custom CSS provided by other means.', 'qtranslate' ), __( 'Use custom CSS', 'qtranslate' ) ) ?></p>
+                        <br/><input type="checkbox" name="hide_lsb_copy_content"
+                                    id="hide_lsb_copy_content"
+                                    value="1"<?php checked( ! empty( $q_config['hide_lsb_copy_content'] ) ) ?> ><label
+                                for="hide_lsb_copy_content"><?php _e( 'Hide button "Copy From", which allows to copy multilingual content from other language.', 'qtranslate' ) ?></label>
+                    </fieldset>
+                </td>
+            </tr>
             <tr id="option_highlight_mode">
                 <?php
                 $highlight_mode = $q_config['highlight_mode'];

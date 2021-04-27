@@ -514,15 +514,19 @@ function qtranxf_add_admin_css() {
 
     wp_register_style( 'qtranslate-admin-style', plugins_url( 'css/qtranslate_configuration.css', __FILE__ ), array(), QTX_VERSION );
     wp_enqueue_style( 'qtranslate-admin-style' );
-    qtranxf_add_admin_lang_icons();
-    $css = qtranxf_add_admin_highlight_css();
-    $fn  = QTRANSLATE_DIR . '/admin/css/opLSBStyle/' . $q_config['lsb_style'];
-    if ( file_exists( $fn ) ) {
-        $css .= file_get_contents( $fn );
+
+    // TODO remove temporary conversion for legacy values before 3.10.0
+    $selected_lsb_style = str_replace( '.css', '', strtolower( $q_config['lsb_style'] ) );
+    $css_path_lsb       = 'css/lsb/' . $selected_lsb_style . '.css';
+    if ( file_exists( __DIR__ . '/' . $css_path_lsb ) ) {
+        wp_register_style( 'qtranslate-admin-lsb', plugins_url( $css_path_lsb, __FILE__ ), array(), QTX_VERSION );
+        wp_enqueue_style( 'qtranslate-admin-lsb' );
     }
-    $css                  = preg_replace( '!/\\*.*?\\*/!ms', '', $css );
-    $css                  = preg_replace( '!//.*?$!m', '', $css );
-    $css                  = preg_replace( '/\\n\\s*\\n/m', "\n", $css );
+
+    // TODO possibly replace internal CSS with external CSS
+    qtranxf_add_admin_lang_icons();
+
+    $css                  = qtranxf_add_admin_highlight_css();
     $current_color_scheme = qtranxf_get_user_admin_color();
     foreach ( $current_color_scheme as $key => $color ) {
         $css = preg_replace( '/#UserColor' . $key . '/m', $color, $css );
